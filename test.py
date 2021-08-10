@@ -1,14 +1,14 @@
-from emotion_recognition import EmotionRecognizer
-
-import pyaudio
 import os
 import wave
-from sys import byteorder
 from array import array
 from struct import pack
-from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier
+from sys import byteorder
 
-from utils import get_best_estimators
+import pyaudio
+import soundfile
+
+from .emotion_recognition import EmotionRecognizer
+from .utils import get_best_estimators
 
 THRESHOLD = 500
 CHUNK_SIZE = 1024
@@ -127,7 +127,6 @@ def get_estimators_name(estimators):
     return ','.join(result), {estimator_name.strip('"'): estimator for estimator_name, (estimator, _, _) in zip(result, estimators)}
 
 
-
 if __name__ == "__main__":
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
@@ -147,7 +146,6 @@ if __name__ == "__main__":
                                         default is "BaggingClassifier"
                                         """.format(estimators_str), default="BaggingClassifier")
 
-
     # Parse the arguments passed
     args = parser.parse_args()
 
@@ -155,9 +153,7 @@ if __name__ == "__main__":
     detector = EmotionRecognizer(estimator_dict[args.model], emotions=args.emotions.split(","), features=features, verbose=0)
     detector.train()
     print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
-    print("Please talk")
-    
+
+    # print("Please talk")
     filename = "test.wav"
     record_to_file(filename)
-    result = detector.predict(filename)
-    print(result)

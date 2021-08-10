@@ -1,12 +1,13 @@
 
+import os
+from collections import defaultdict
+
 import numpy as np
 import pandas as pd
-import pickle
+import soundfile
 import tqdm
-import os
 
-from utils import get_label, extract_feature, get_first_letters
-from collections import defaultdict
+from .utils import get_label, extract_feature, get_first_letters
 
 
 class AudioExtractor:
@@ -110,7 +111,10 @@ class AudioExtractor:
             features = []
             append = features.append
             for audio_file in tqdm.tqdm(audio_paths, f"Extracting features for {partition}"):
-                feature = extract_feature(audio_file, **self.audio_config)
+                with soundfile.SoundFile(audio_file) as sound_file:
+                    audio_data = sound_file.read(dtype="float32")
+                    sample_rate = sound_file.samplerate
+                feature = extract_feature(audio_data=audio_data, sample_rate=sample_rate, **self.audio_config)
                 if self.input_dimension is None:
                     self.input_dimension = feature.shape[0]
                 append(feature)

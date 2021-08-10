@@ -1,19 +1,20 @@
-from data_extractor import load_data
-from utils import extract_feature, AVAILABLE_EMOTIONS
-from create_csv import write_emodb_csv, write_tess_ravdess_csv, write_custom_csv
+import os
+import random
+from time import time
 
+import matplotlib.pyplot as pl
+import numpy as np
+import pandas as pd
+import tqdm
+from numpy.typing import ArrayLike
 from sklearn.metrics import accuracy_score, make_scorer, fbeta_score, mean_squared_error, mean_absolute_error
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import GridSearchCV
 
-import matplotlib.pyplot as pl
-from time import time
-from utils import get_best_estimators, get_audio_config
-import numpy as np
-import tqdm
-import os
-import random
-import pandas as pd
+from .utils import extract_feature, AVAILABLE_EMOTIONS
+from .utils import get_best_estimators, get_audio_config
+from .create_csv import write_emodb_csv, write_tess_ravdess_csv, write_custom_csv
+from .data_extractor import load_data
 
 
 class EmotionRecognizer:
@@ -72,8 +73,6 @@ class EmotionRecognizer:
 
         # set metadata path file names
         self._set_metadata_filenames()
-        # write csv's anyway
-        self.write_csv()
 
         # boolean attributes
         self.data_loaded = False
@@ -86,15 +85,16 @@ class EmotionRecognizer:
         - `self.test_desc_files` for testing CSVs
         """
         train_desc_files, test_desc_files = [], []
+        module_root = os.path.dirname(__file__)
         if self.tess_ravdess:
-            train_desc_files.append(f"train_{self.tess_ravdess_name}")
-            test_desc_files.append(f"test_{self.tess_ravdess_name}")
+            train_desc_files.append(os.path.join(module_root, f"train_{self.tess_ravdess_name}"))
+            test_desc_files.append(os.path.join(module_root, f"test_{self.tess_ravdess_name}"))
         if self.emodb:
-            train_desc_files.append(f"train_{self.emodb_name}")
-            test_desc_files.append(f"test_{self.emodb_name}")
+            train_desc_files.append(os.path.join(module_root, f"train_{self.emodb_name}"))
+            test_desc_files.append(os.path.join(module_root, f"test_{self.emodb_name}"))
         if self.custom_db:
-            train_desc_files.append(f"train_{self.custom_db_name}")
-            test_desc_files.append(f"test_{self.custom_db_name}")
+            train_desc_files.append(os.path.join(module_root, f"train_{self.custom_db_name}"))
+            test_desc_files.append(os.path.join(module_root, f"test_{self.custom_db_name}"))
 
         # set them to be object attributes
         self.train_desc_files = train_desc_files
@@ -157,6 +157,7 @@ class EmotionRecognizer:
         """
         Train the model, if data isn't loaded, it 'll be loaded automatically
         """
+        self.write_csv()
         if not self.data_loaded:
             # if data isn't loaded yet, load it then
             self.load_data()
@@ -166,20 +167,20 @@ class EmotionRecognizer:
             if verbose:
                 print("[+] Model trained")
 
-    def predict(self, audio_path):
+    def predict(self, audio_data: ArrayLike, sample_rate: int):
         """
         given an `audio_path`, this method extracts the features
         and predicts the emotion
         """
-        feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
+        feature = extract_feature(audio_data=audio_data, sample_rate=sample_rate, **self.audio_config).reshape(1, -1)
         return self.model.predict(feature)[0]
 
-    def predict_proba(self, audio_path):
+    def predict_proba(self, audio_data: ArrayLike, sample_rate: int):
         """
         Predicts the probability of each emotion.
         """
         if self.classification:
-            feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
+            feature = extract_feature(audio_data=audio_data, sample_rate=sample_rate, **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]
             result = {}
             for emotion, prob in zip(self.model.classes_, proba):
