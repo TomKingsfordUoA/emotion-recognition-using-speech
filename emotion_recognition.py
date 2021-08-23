@@ -1,12 +1,12 @@
 import os
 import random
+import typing
 from time import time
 
 import matplotlib.pyplot as pl
 import numpy as np
 import pandas as pd
 import tqdm
-from numpy.typing import ArrayLike
 from sklearn.metrics import accuracy_score, make_scorer, fbeta_score, mean_squared_error, mean_absolute_error
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import GridSearchCV
@@ -167,7 +167,10 @@ class EmotionRecognizer:
             if verbose:
                 print("[+] Model trained")
 
-    def predict(self, audio_data: ArrayLike, sample_rate: int):
+    def predict(
+            self,
+            audio_data: typing.Any,  # TODO(TK): return to np.typing.ArrayLike when numpy upgrades to 1.20+ (dependent on TensorFlow support)
+            sample_rate: int):
         """
         given an `audio_path`, this method extracts the features
         and predicts the emotion
@@ -175,7 +178,10 @@ class EmotionRecognizer:
         feature = extract_feature(audio_data=audio_data, sample_rate=sample_rate, **self.audio_config).reshape(1, -1)
         return self.model.predict(feature)[0]
 
-    def predict_proba(self, audio_data: ArrayLike, sample_rate: int):
+    def predict_proba(
+            self,
+            audio_data: typing.Any,  # TODO(TK): return to np.typing.ArrayLike when numpy upgrades to 1.20+ (dependent on TensorFlow support)
+            sample_rate: int):
         """
         Predicts the probability of each emotion.
         """

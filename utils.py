@@ -1,12 +1,11 @@
 import importlib.resources
 import os
+import typing
 
 import soundfile
 import librosa
 import numpy as np
 import pickle
-
-from numpy.typing import ArrayLike
 
 AVAILABLE_EMOTIONS = {
     "neutral",
@@ -46,7 +45,10 @@ def get_first_letters(emotions):
     return "".join(sorted([ e[0].upper() for e in emotions ]))
 
 
-def extract_feature(audio_data: ArrayLike, sample_rate: int, **kwargs):
+def extract_feature(
+        audio_data: typing.Any,  # TODO(TK): return to np.typing.ArrayLike when numpy upgrades to 1.20+ (dependent on TensorFlow support)
+        sample_rate: int,
+        **kwargs):
     """
     Extract feature from audio file `file_name`
         Features supported:
