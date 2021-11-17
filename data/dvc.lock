@@ -1,0 +1,57 @@
+schema: '2.0'
+stages:
+  extract_tess:
+    cmd: mkdir TESS
+    deps:
+    - path: TESS.zip
+      md5: 382d4326bb1608969276b342d6b2b6e7
+      size: 223829029
+    outs:
+    - path: TESS
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+  extract_RAVDESS:
+    cmd: mkdir RAVDESS_extracted
+    deps:
+    - path: RAVDESS
+      md5: 143a9fe96d068f2924eb0a3621d878fb.dir
+      size: 25600221058
+      nfiles: 51
+    outs:
+    - path: RAVDESS_extracted
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+  extract_ravdess:
+    cmd: python extract_ravdess.py
+    deps:
+    - path: RAVDESS
+      md5: 143a9fe96d068f2924eb0a3621d878fb.dir
+      size: 25600221058
+      nfiles: 51
+    - path: extract_ravdess.py
+      md5: b9a9eda722d23ad8651e879f8033f5b0
+      size: 660
+    outs:
+    - path: RAVDESS_extracted
+      md5: 199b3fe4b28145788675ea28122352ae.dir
+      size: 26648482148
+      nfiles: 7356
+  split_data:
+    cmd: python split_data.py
+    deps:
+    - path: RAVDESS_extracted
+      md5: 199b3fe4b28145788675ea28122352ae.dir
+      size: 26648482148
+      nfiles: 7356
+    - path: split_data.py
+      md5: 2d48561decdf06a4cc10157d07ed33a2
+      size: 3106
+    outs:
+    - path: test_ravdess.csv
+      md5: a5e6968acc8702f32a2bf93ba9a3992b
+      size: 19153
+    - path: train_ravdess.csv
+      md5: 851bfa06ace108b44fe6261df07b7472
+      size: 72745
