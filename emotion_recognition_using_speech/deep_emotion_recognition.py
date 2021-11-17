@@ -1,8 +1,5 @@
 import os
-# disable keras loggings
 import sys
-stderr = sys.stderr
-sys.stderr = open(os.devnull, 'w')
 
 import numpy as np
 import pandas as pd

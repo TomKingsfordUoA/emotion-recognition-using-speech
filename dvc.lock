@@ -1,0 +1,43 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: rm -f features/* && rm -f results/* && PYTHONPATH=/home/tom/projects/emotion-recognition-using-speech
+      python notebooks/train.py
+    deps:
+    - path: data/test_ravdess.csv
+      md5: db6b062178cd6823b8bf713d1293ac60
+      size: 18753
+    - path: data/train_ravdess.csv
+      md5: 1e5e785700ac92133a7cc99af66fc5e5
+      size: 71225
+    - path: notebooks/train.py
+      md5: bbeb1a805714b17d1419a45efa8c339e
+      size: 523
+    outs:
+    - path: features/
+      md5: 60a46ccfd89d8f456aef46833fa3205b.dir
+      size: 2073856
+      nfiles: 2
+    - path: results/
+      md5: 497af5d18957eaad5f2dbd11cc2b18da.dir
+      size: 3950392
+      nfiles: 1
+  predict:
+    cmd: PYTHONPATH=/home/tom/projects/emotion-recognition-using-speech python notebooks/predict.py
+    deps:
+    - path: data/test_ravdess.csv
+      md5: db6b062178cd6823b8bf713d1293ac60
+      size: 18753
+    - path: data/train_ravdess.csv
+      md5: 1e5e785700ac92133a7cc99af66fc5e5
+      size: 71225
+    - path: notebooks/predict.py
+      md5: dac9f95f5fc1a6a7786cab7286143811
+      size: 3014
+    outs:
+    - path: data/test_ravdess_pred.csv
+      md5: ecab1eb639abe5f22bfaa2738a7450aa
+      size: 48198
+    - path: data/train_ravdess_pred.csv
+      md5: 875ef10ee3c77005860ba270e74b87c6
+      size: 183504

@@ -2,7 +2,7 @@ from emotion_recognition_using_speech.deep_emotion_recognition import DeepEmotio
 
 
 model = DeepEmotionRecognizer(
-    emotions=['angry', 'sad', 'neutral', 'ps', 'happy'],
+    emotions=['neutral', 'calm', 'happy', 'sad', 'angry', 'fear', 'disgust', 'ps'],
     tess_ravdess=True,
     tess_ravdess_name='ravdess.csv',
     emodb=False,

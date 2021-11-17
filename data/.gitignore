@@ -4,3 +4,5 @@
 /RAVDESS_extracted
 /train_ravdess.csv
 /test_ravdess.csv
+/train_ravdess_pred.csv
+/test_ravdess_pred.csv

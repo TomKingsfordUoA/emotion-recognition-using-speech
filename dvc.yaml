@@ -1,0 +1,20 @@
+stages:
+  train:
+    cmd: rm -f features/* && rm -f results/* && PYTHONPATH=/home/tom/projects/emotion-recognition-using-speech
+      python notebooks/train.py
+    deps:
+    - data/test_ravdess.csv
+    - data/train_ravdess.csv
+    - notebooks/train.py
+    outs:
+    - features/
+    - results/
+  predict:
+    cmd: PYTHONPATH=/home/tom/projects/emotion-recognition-using-speech python notebooks/predict.py
+    deps:
+    - data/test_ravdess.csv
+    - data/train_ravdess.csv
+    - notebooks/predict.py
+    outs:
+    - data/test_ravdess_pred.csv
+    - data/train_ravdess_pred.csv

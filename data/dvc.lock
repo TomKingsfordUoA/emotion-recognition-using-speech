@@ -46,12 +46,12 @@ stages:
       size: 26648482148
       nfiles: 7356
     - path: split_data.py
-      md5: 2d48561decdf06a4cc10157d07ed33a2
-      size: 3106
+      md5: 9d4f652607af41133453c42ad9fb09bc
+      size: 3096
     outs:
     - path: test_ravdess.csv
-      md5: a5e6968acc8702f32a2bf93ba9a3992b
-      size: 19153
+      md5: db6b062178cd6823b8bf713d1293ac60
+      size: 18753
     - path: train_ravdess.csv
-      md5: 851bfa06ace108b44fe6261df07b7472
-      size: 72745
+      md5: 1e5e785700ac92133a7cc99af66fc5e5
+      size: 71225

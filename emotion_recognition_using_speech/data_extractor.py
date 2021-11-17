@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import soundfile
 import tqdm
+import librosa
 
 from .utils import get_label, extract_feature, get_first_letters
 
@@ -110,13 +111,24 @@ class AudioExtractor:
             features = []
             append = features.append
             for audio_file in tqdm.tqdm(audio_paths, f"Extracting features for {partition}"):
-                with soundfile.SoundFile(audio_file) as sound_file:
-                    audio_data = sound_file.read(dtype="float32")
-                    sample_rate = sound_file.samplerate
-                feature = extract_feature(audio_data=audio_data, sample_rate=sample_rate, **self.audio_config)
-                if self.input_dimension is None:
-                    self.input_dimension = feature.shape[0]
-                append(feature)
+                try:
+                    with soundfile.SoundFile(audio_file) as sound_file:
+                        audio_data = sound_file.read(dtype="float32")
+                        sample_rate = sound_file.samplerate
+                    if len(audio_data.shape) == 1 or audio_data.shape[1] == 1:
+                        pass
+                    elif audio_data.shape[1] == 2:
+                        audio_data = librosa.to_mono(audio_data.transpose())
+                    else:
+                        raise ValueError("Unexpected audio data shape: {audio_data.shape}")
+                    feature = extract_feature(audio_data=audio_data, sample_rate=sample_rate, **self.audio_config)
+                    if self.input_dimension is None:
+                        self.input_dimension = feature.shape[0]
+                    append(feature)
+                except Exception as exc:
+                    import traceback
+                    print(traceback.format_exc())
+                    raise exc
             # convert to numpy array
             features = np.array(features)
             # save it
@@ -170,6 +182,7 @@ class AudioExtractor:
             # regression, take actual numbers, not label emotion
             for emotion in self.categories.values():
                 count.append(len([ e for e in emotions if e == emotion]))
+        print(count)
         # get the minimum data samples to balance to
         minimum = min(count)
         if minimum == 0:
