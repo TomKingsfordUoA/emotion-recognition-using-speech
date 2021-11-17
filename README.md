@@ -53,7 +53,7 @@ This may take several hours to complete execution, once it is finished, best est
 ## Example 1: Using 3 Emotions
 The way to build and train a model for classifying 3 emotions is as shown below:
 ```python
-from emotion_recognition import EmotionRecognizer
+from emotion_recognition_using_speech.emotion_recognition import EmotionRecognizer
 from sklearn.svm import SVC
 # init a model, let's use SVC
 my_model = SVC()
@@ -171,7 +171,7 @@ Wait until "Please talk" prompt is appeared, then you can start talking, and the
 
 You can change emotions to predict, as well as models, type ``--help`` for more information.
 ```
-python test.py --help
+python emotion_recognition_using_speech/test.py --help
 ```
 **Output:**
 ```
@@ -208,3 +208,10 @@ plot_histograms(classifiers=True)
 
 <img src="images/Figure.png">
 <p align="center">A Histogram shows different algorithms metric results on different data sizes as well as time consumed to train/predict.</p>
+
+
+## Data Versioning
+
+DVC has been used to track various data processing and model training stages. This ensures both repeatability and posterity, as the nature of 
+processing is recorded as are the results. The actual data is stored in an S3-compliant object store which isn't publicly available. Artifacts can 
+be made available upon request to tkin063@aucklanduni.ac.nz.

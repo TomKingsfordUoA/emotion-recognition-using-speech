@@ -3,24 +3,23 @@ import os
 import sys
 stderr = sys.stderr
 sys.stderr = open(os.devnull, 'w')
-import tensorflow as tf
 
+import numpy as np
+import pandas as pd
+import random
+
+import tensorflow as tf
 from tensorflow.keras.layers import LSTM, GRU, Dense, Activation, LeakyReLU, Dropout
 from tensorflow.keras.layers import Conv1D, MaxPool1D, GlobalAveragePooling1D
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.keras.utils import to_categorical
-
 from sklearn.metrics import accuracy_score, mean_absolute_error, confusion_matrix
 
-from data_extractor import load_data
-from create_csv import write_custom_csv, write_emodb_csv, write_tess_ravdess_csv
-from emotion_recognition import EmotionRecognizer
-from utils import get_first_letters, AVAILABLE_EMOTIONS, extract_feature, get_dropout_str
-
-import numpy as np
-import pandas as pd
-import random
+from .data_extractor import load_data
+from .create_csv import write_custom_csv, write_emodb_csv, write_tess_ravdess_csv
+from .emotion_recognition import EmotionRecognizer
+from .utils import get_first_letters, AVAILABLE_EMOTIONS, extract_feature, get_dropout_str
 
 
 class DeepEmotionRecognizer(EmotionRecognizer):

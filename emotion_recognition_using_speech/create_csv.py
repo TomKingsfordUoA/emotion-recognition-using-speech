@@ -1,6 +1,7 @@
 import glob
-import pandas as pd
 import os
+
+import pandas as pd
 
 
 def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.csv",
